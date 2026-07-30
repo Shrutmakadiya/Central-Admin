@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.log
+
+# Downloaded mod assets (can be many GB) — deploy these to Netlify directly,
+# don't commit them to git. The folder itself is kept via .gitkeep.
+public/mods/*
+!public/mods/.gitkeep
+public/
