@@ -87,12 +87,6 @@ export default function ModEditor() {
               </select>
             </div>
             <div className="field">
-              <label>Scare Level (1–5)</label>
-              <select className="select" value={form.scareLevel} onChange={set('scareLevel')}>
-                {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{'💀'.repeat(n)} ({n})</option>)}
-              </select>
-            </div>
-            <div className="field">
               <label>MC Version</label>
               <input className="input" value={form.mcVersion} onChange={set('mcVersion')} />
             </div>
