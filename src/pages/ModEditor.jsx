@@ -43,27 +43,41 @@ export default function ModEditor() {
   const modSlug = () =>
     (form.title || 'misc').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'misc';
 
+  const [uploading, setUploading] = useState(false);
+
   async function uploadToR2(file, kind) {
-    const fd = new FormData();
-    fd.append('file', file);
-    return api.upload(`/api/uploads?slug=${modSlug()}&kind=${kind}`, fd);
+    setError('');
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      return await api.upload(`/api/uploads?slug=${modSlug()}&kind=${kind}`, fd);
+    } catch (err) {
+      setError(`Upload failed: ${err.message} — check the backend's R2 env vars, and note files over ~4.5 MB can't pass through Vercel.`);
+      throw err;
+    } finally {
+      setUploading(false);
+    }
   }
 
   // Multi-select: pick up to 5 at once; extra files beyond the 5-slot cap are ignored.
   async function uploadScreenshot(e) {
     const files = Array.from(e.target.files || []);
     e.target.value = '';
+    try {
     for (const file of files) {
       if ((formRef.current.screenshots || []).length >= 5) break;
       const res = await uploadToR2(file, 'image');
       setForm((f) => ({ ...f, screenshots: [...(f.screenshots || []), res.url].slice(0, 5) }));
     }
+    } catch (e2) {}
   }
 
   async function uploadFile(e, key) {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
-    const res = await uploadToR2(file, key === 'fileUrl' ? 'file' : 'image');
+    let res;
+    try { res = await uploadToR2(file, key === 'fileUrl' ? 'file' : 'image'); } catch (e2) { return; }
     setForm((f) => ({ ...f, [key]: res.url, ...(key === 'fileUrl' ? { sizeBytes: res.sizeBytes || 0 } : {}) }));
     e.target.value = '';
   }
