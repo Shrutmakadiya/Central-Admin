@@ -16,6 +16,8 @@ export default function ModEditor() {
   const [cats, setCats] = useState([]);
   const [loading, setLoading] = useState(editing);
   const [error, setError] = useState('');
+  const formRef = React.useRef(form);
+  React.useEffect(() => { formRef.current = form; }, [form]);
 
   useEffect(() => {
     api.get('/api/categories').then(setCats);
@@ -36,23 +38,34 @@ export default function ModEditor() {
     setForm((f) => ({ ...f, [k]: v }));
   };
 
-  async function uploadScreenshot(e) {
-    const file = e.target.files && e.target.files[0];
-    if (!file) return;
+  // Uploads go straight to R2 through the central backend and come back as permanent
+  // absolute public URLs — which is also why previews render instantly.
+  const modSlug = () =>
+    (form.title || 'misc').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'misc';
+
+  async function uploadToR2(file, kind) {
     const fd = new FormData();
     fd.append('file', file);
-    const res = await api.upload('/api/mods/upload', fd);
-    setForm((f) => ({ ...f, screenshots: [...(f.screenshots || []), res.url].slice(0, 5) }));
+    return api.upload(`/api/uploads?slug=${modSlug()}&kind=${kind}`, fd);
+  }
+
+  // Multi-select: pick up to 5 at once; extra files beyond the 5-slot cap are ignored.
+  async function uploadScreenshot(e) {
+    const files = Array.from(e.target.files || []);
     e.target.value = '';
+    for (const file of files) {
+      if ((formRef.current.screenshots || []).length >= 5) break;
+      const res = await uploadToR2(file, 'image');
+      setForm((f) => ({ ...f, screenshots: [...(f.screenshots || []), res.url].slice(0, 5) }));
+    }
   }
 
   async function uploadFile(e, key) {
-    const file = e.target.files[0];
+    const file = e.target.files && e.target.files[0];
     if (!file) return;
-    const fd = new FormData();
-    fd.append('file', file);
-    const res = await api.upload('/api/mods/upload', fd);
-    setForm((f) => ({ ...f, [key]: res.url, ...(key === 'fileUrl' ? { sizeBytes: res.size } : {}) }));
+    const res = await uploadToR2(file, key === 'fileUrl' ? 'file' : 'image');
+    setForm((f) => ({ ...f, [key]: res.url, ...(key === 'fileUrl' ? { sizeBytes: res.sizeBytes || 0 } : {}) }));
+    e.target.value = '';
   }
 
   async function save(e) {
@@ -149,7 +162,7 @@ export default function ModEditor() {
               {(form.screenshots || []).length < 5 && (
                 <label style={{ width: 130, height: 84, border: '2px dashed #cdd3de', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#8392ab', fontSize: 26 }}>
                   +
-                  <input type="file" accept="image/*" onChange={uploadScreenshot} style={{ display: 'none' }} />
+                  <input type="file" accept="image/*" multiple onChange={uploadScreenshot} style={{ display: 'none' }} />
                 </label>
               )}
             </div>
