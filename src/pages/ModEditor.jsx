@@ -5,7 +5,7 @@ import { Card, Spinner } from '../components/ui';
 
 const EMPTY = {
   title: '', description: '', categoryId: '', scareLevel: 3, mcVersion: '1.20+',
-  thumbnailUrl: '', fileUrl: '', sizeBytes: 0, status: 'published', featured: false,
+  thumbnailUrl: '', fileUrl: '', sizeBytes: 0, status: 'published', featured: false, screenshots: [],
 };
 
 export default function ModEditor() {
@@ -24,7 +24,7 @@ export default function ModEditor() {
         setForm({
           title: m.title, description: m.description, categoryId: m.categoryId || '',
           scareLevel: m.scareLevel, mcVersion: m.mcVersion, thumbnailUrl: m.thumbnailUrl,
-          fileUrl: m.fileUrl, sizeBytes: m.sizeBytes, status: m.status, featured: m.featured,
+          fileUrl: m.fileUrl, sizeBytes: m.sizeBytes, status: m.status, featured: m.featured, screenshots: m.screenshots || [],
         });
         setLoading(false);
       });
@@ -35,6 +35,16 @@ export default function ModEditor() {
     const v = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setForm((f) => ({ ...f, [k]: v }));
   };
+
+  async function uploadScreenshot(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await api.upload('/api/mods/upload', fd);
+    setForm((f) => ({ ...f, screenshots: [...(f.screenshots || []), res.url].slice(0, 5) }));
+    e.target.value = '';
+  }
 
   async function uploadFile(e, key) {
     const file = e.target.files[0];
@@ -121,10 +131,31 @@ export default function ModEditor() {
           </div>
 
           {form.thumbnailUrl && (
-            <img src={form.thumbnailUrl} alt="" style={{ width: 160, borderRadius: 10, marginTop: 8 }} />
+            <img src={form.thumbnailUrl} alt="thumbnail preview" style={{ width: 160, borderRadius: 10, marginTop: 8, border: '1px solid #e3e6ec' }} />
           )}
 
-          <div style={{ marginTop: 16 }}>
+          
+          <div className="field" style={{ marginTop: 16 }}>
+            <label>App screenshots (max 5) — shown in the mod detail gallery</label>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
+              {(form.screenshots || []).map((u, i) => (
+                <div key={i} style={{ position: 'relative' }}>
+                  <img src={u} alt={`screenshot ${i + 1}`} style={{ width: 130, height: 84, objectFit: 'cover', borderRadius: 8, border: '1px solid #e3e6ec' }} />
+                  <button type="button"
+                    onClick={() => setForm((f) => ({ ...f, screenshots: f.screenshots.filter((_, j) => j !== i) }))}
+                    style={{ position: 'absolute', top: -8, right: -8, background: '#f5365c', color: '#fff', border: 'none', borderRadius: '50%', width: 22, height: 22, cursor: 'pointer', lineHeight: '20px' }}>×</button>
+                </div>
+              ))}
+              {(form.screenshots || []).length < 5 && (
+                <label style={{ width: 130, height: 84, border: '2px dashed #cdd3de', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#8392ab', fontSize: 26 }}>
+                  +
+                  <input type="file" accept="image/*" onChange={uploadScreenshot} style={{ display: 'none' }} />
+                </label>
+              )}
+            </div>
+          </div>
+
+<div style={{ marginTop: 16 }}>
             <button className="btn">{editing ? 'Save Changes' : 'Create Mod'}</button>{' '}
             <button type="button" className="btn btn-ghost" onClick={() => nav('/mods')}>Cancel</button>
           </div>

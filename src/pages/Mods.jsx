@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
-import { Card, Badge, ScareLevel, Spinner, Empty, formatBytes, formatDate } from '../components/ui';
+import { Card, Badge, Spinner, Empty, formatBytes, formatDate } from '../components/ui';
 import { useAuth } from '../auth';
 
 export default function Mods() {
@@ -40,7 +40,7 @@ export default function Mods() {
           <table>
             <thead>
               <tr>
-                <th>Title</th><th>Category</th><th>Scare</th><th>Impressions</th>
+                <th>Title</th><th>Category</th><th>Impressions</th>
                 <th>Downloads</th><th>Conversion</th><th>Size</th><th>Status</th><th>Created</th><th></th>
               </tr>
             </thead>
@@ -49,7 +49,7 @@ export default function Mods() {
                 <tr key={m.id}>
                   <td><strong>{m.title}</strong>{m.featured && <Badge color="blue"> Featured</Badge>}</td>
                   <td className="muted">{m.categoryName || '—'}</td>
-                  <td><ScareLevel level={m.scareLevel} /></td>
+                  
                   <td>{m.impressions.toLocaleString()}</td>
                   <td>{m.downloads.toLocaleString()}</td>
                   <td>{m.conversion}%</td>
