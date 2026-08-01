@@ -4,7 +4,7 @@ import { Card } from '../components/ui';
 // The PUBLIC base where the legal pages are served (the backend). This is the URL you give to
 // Google Play / AdMob. In production set VITE_API_BASE to your backend origin; otherwise we
 // default to the deployed Vercel backend.
-const PUBLIC_BASE = (import.meta.env.VITE_API_BASE || 'https://horror-mods-backend.vercel.app').replace(/\/$/, '');
+const PUBLIC_BASE = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
 // For the in-dashboard preview, use a relative path in dev so Vite proxies it to the local backend.
 const PREVIEW_BASE = (import.meta.env.VITE_API_BASE || '').replace(/\/$/, '');
 

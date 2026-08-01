@@ -62,7 +62,7 @@ export default function Dashboard() {
   return (
     <div>
       <h1 className="page-title">Dashboard</h1>
-      <p className="page-sub">Horror Mods analytics overview — last 14 days</p>
+      <p className="page-sub">Analytics overview for the selected app — last 14 days</p>
 
       <div className="kpi-grid">
         <KpiCard label="Impressions" value={summary.impressions.toLocaleString()} icon="👁️" color="#1d8cf8" onClick={() => nav('/analysis')} />

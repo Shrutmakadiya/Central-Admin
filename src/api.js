@@ -8,6 +8,8 @@ function token() {
 async function request(method, path, body, isForm) {
   const headers = {};
   if (token()) headers.Authorization = `Bearer ${token()}`;
+  // Central multi-app: every request is scoped to the app selected in the switcher.
+  headers['x-app-key'] = localStorage.getItem('central_app') || 'gf';
   let payload;
   if (isForm) {
     payload = body; // FormData

@@ -8,6 +8,7 @@ import Mods from './pages/Mods';
 import ModEditor from './pages/ModEditor';
 import ModAnalysis from './pages/ModAnalysis';
 import Audience from './pages/Audience';
+import Apps from './pages/Apps';
 import CategoryClicks from './pages/CategoryClicks';
 import SearchKeywords from './pages/SearchKeywords';
 import ChangeHistory from './pages/ChangeHistory';
@@ -35,6 +36,7 @@ export default function App() {
       <Route path="/mods/:id" element={<Protected><ModEditor /></Protected>} />
       <Route path="/analysis" element={<Protected><ModAnalysis /></Protected>} />
       <Route path="/audience" element={<Protected><Audience /></Protected>} />
+      <Route path="/apps" element={<Protected><Apps /></Protected>} />
       <Route path="/category-clicks" element={<Protected><CategoryClicks /></Protected>} />
       <Route path="/keywords" element={<Protected><SearchKeywords /></Protected>} />
       <Route path="/history" element={<Protected><ChangeHistory /></Protected>} />

@@ -63,7 +63,7 @@ export default function ModEditor() {
   return (
     <div>
       <h1 className="page-title">{editing ? 'Edit Mod' : 'Add Mod'}</h1>
-      <p className="page-sub">{editing ? 'Update mod details' : 'Create a new horror mod'}</p>
+      <p className="page-sub">{editing ? 'Update mod details' : 'Create a new mod'}</p>
 
       <form onSubmit={save} style={{ maxWidth: 760 }}>
         <Card>

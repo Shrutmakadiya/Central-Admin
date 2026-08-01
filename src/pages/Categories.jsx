@@ -41,7 +41,7 @@ export default function Categories() {
   return (
     <div>
       <h1 className="page-title">Categories</h1>
-      <p className="page-sub">Organize your horror mods</p>
+      <p className="page-sub">Organize your apps central</p>
 
       <div className="grid-2">
         <Card title="Categories">

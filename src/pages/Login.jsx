@@ -28,8 +28,8 @@ export default function Login() {
     <div className="login-wrap">
       <form className="login-card" onSubmit={submit}>
         <div className="login-brand">
-          <div className="icon">👹</div>
-          <h1>Horror Mods</h1>
+          <div className="icon">🗃️</div>
+          <h1>Apps Central</h1>
           <p>Analytics Dashboard</p>
         </div>
         {error && <div className="error-text">{error}</div>}

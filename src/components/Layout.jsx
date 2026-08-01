@@ -18,6 +18,7 @@ const NAV = [
   { to: '/roles', label: 'Roles', ico: '🛡️', perm: 'manage_roles' },
   { to: '/ads', label: 'Ads & Monetization', ico: '💰', perm: 'manage_ads' },
   { to: '/app-version', label: 'App Version', ico: '🔄', perm: 'manage_app_version' },
+  { to: '/apps', label: 'Manage Apps', ico: '🗃️', perm: 'manage_users' },
   { to: '/legal', label: 'Legal & Privacy', ico: '📄', perm: 'view_dashboard' },
 ];
 
@@ -29,8 +30,8 @@ export default function Layout({ children }) {
     <div className="app">
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <span className="icon">👹</span>
-          <span>Horror Mods</span>
+          <span className="icon">🗃️</span>
+          <span>Apps Central</span>
         </div>
         <nav>
           {NAV.map((item, i) =>
