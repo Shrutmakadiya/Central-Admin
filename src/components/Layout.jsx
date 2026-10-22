@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth';
+import { api } from '../api';
 
 // Nav items mirror the iMods dashboard structure (Main + Admin sections).
 const NAV = [
@@ -25,6 +26,12 @@ const NAV = [
 export default function Layout({ children }) {
   const { user, logout, can } = useAuth();
   const nav = useNavigate();
+  const [selectedApp, setSelectedApp] = useState(null);
+  useEffect(() => {
+    api.get('/api/apps').then((apps) => {
+      setSelectedApp(apps.find((app) => app.key === (localStorage.getItem('central_app') || 'gf')));
+    }).catch(() => {});
+  }, []);
 
   return (
     <div className="app">
@@ -63,7 +70,13 @@ export default function Layout({ children }) {
           </button>
         </div>
       </aside>
-      <main className="main">{children}</main>
+      <main className="main">
+        {selectedApp?.content_schema && <p className="page-sub" role="note">
+          <strong>{selectedApp.name}</strong> — impressions and downloads belong to this app.
+          {' '}Content is shared with {selectedApp.content_schema}; editing mods or categories updates both apps.
+        </p>}
+        {children}
+      </main>
     </div>
   );
 }
